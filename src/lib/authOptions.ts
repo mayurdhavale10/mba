@@ -1,29 +1,27 @@
+// src/lib/authOptions.ts
 import type { NextAuthOptions } from "next-auth";
-import type { JWT } from "next-auth/jwt";
 import GitHubProvider from "next-auth/providers/github";
-import { env } from "@/lib/env";
-
-type TokenExt = JWT & { provider?: string | undefined };
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
-  providers: [
-    GitHubProvider({
-      clientId: env.GITHUB_ID,
-      clientSecret: env.GITHUB_SECRET,
-    }),
-  ],
   session: { strategy: "jwt" },
+  providers: [
+    ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET
+      ? [GitHubProvider({ clientId: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET })]
+      : []),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [GoogleProvider({ clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET })]
+      : []),
+  ],
   callbacks: {
-    async jwt({ token, account }) {
-      const t = token as TokenExt;
-      if (account) t.provider = account.provider;
-      return t;
+    async jwt({ token }) {
+      return token;
     },
-    async session({ session, token }) {
-      const t = token as TokenExt;
-      session.provider = t.provider;
-      session.user = { ...session.user, id: t.sub ?? null };
+    async session({ session }) {
       return session;
     },
+  },
+  pages: {
+    signIn: "/login",
   },
 };
