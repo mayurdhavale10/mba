@@ -1,102 +1,90 @@
+// src/app/page.tsx
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-[var(--paper,#ffffff)] text-[var(--ink,#111)]">
+      {/* Sticky in-page navbar */}
+      <header className="sticky top-0 z-50 backdrop-blur bg-white/70 border-b border-black/5">
+        <nav className="mx-auto max-w-[1100px] px-4 py-3 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <Image src="/hompage/mbalogo.webp" alt="MBA Mirror" width={32} height={32} />
+            <span className="font-semibold">MBA Mirror</span>
+          </Link>
+          <div className="hidden sm:flex items-center gap-6 text-sm">
+            <a href="#why-us" className="hover:opacity-80">Why us</a>
+            <a href="#features" className="hover:opacity-80">Features</a>
+            <a href="#product" className="px-3 py-1.5 rounded-full bg-[var(--salmon,#ff6f4d)] text-white hover:opacity-90">
+              Try now
+            </a>
+          </div>
+        </nav>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* HERO */}
+      <section className="relative w-full h-[78vh] md:h-[86vh] overflow-hidden">
+        {/* Background image */}
+        <Image
+          src="/hompage/mbaheroschool.webp"
+          alt="MBA campus hero"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40" />
+        {/* Content */}
+        <div className="relative z-10 h-full">
+          <div className="mx-auto max-w-[1100px] h-full px-6 md:px-8 flex flex-col justify-center">
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white">
+              Stop Guessing. <span className="text-[var(--salmon,#ff6f4d)]">Start Nailing</span> Your MBA Essays.
+            </h1>
+            <p className="mt-4 md:mt-6 text-lg md:text-2xl text-white/90 max-w-2xl">
+              Get the competitive edge. Our AI analyzes your draft and delivers instant, expert-level feedback.
+            </p>
+            <div className="mt-8 flex gap-3">
+              <a
+                href="#product"
+                className="px-5 py-3 rounded-full bg-[var(--salmon,#ff6f4d)] text-white font-medium hover:opacity-90"
+              >
+                Try it now
+              </a>
+              <a
+                href="#why-us"
+                className="px-5 py-3 rounded-full border border-white/70 text-white font-medium hover:bg-white/10"
+              >
+                Why us
+              </a>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Placeholder anchors so the navbar links work (fill later with real sections) */}
+      <section id="why-us" className="mx-auto max-w-[1100px] px-6 md:px-8 py-20">
+        <h2 className="text-2xl font-semibold mb-4">Why us</h2>
+        <p className="text-sm text-black/70">Add your value props here.</p>
+      </section>
+
+      <section id="features" className="mx-auto max-w-[1100px] px-6 md:px-8 py-20">
+        <h2 className="text-2xl font-semibold mb-4">Features</h2>
+        <ul className="list-disc pl-6 space-y-2 text-black/80">
+          <li>Paste or OCR</li>
+          <li>Clarity / Structure / Storytelling scores</li>
+          <li>Rewrite examples and summary</li>
+          <li>Export to PDF/TXT</li>
+        </ul>
+      </section>
+
+      <section id="product" className="mx-auto max-w-[1100px] px-6 md:px-8 py-20">
+        <h2 className="text-2xl font-semibold mb-4">Product</h2>
+        <p className="text-sm text-black/70">Hook up the real Essay Review UI here.</p>
+      </section>
+
+      <footer className="border-t border-black/5 py-8 text-center text-sm text-black/60">
+        © {new Date().getFullYear()} MBA Mirror
       </footer>
     </div>
   );
