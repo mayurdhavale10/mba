@@ -86,11 +86,14 @@ export default function InPageNavbar() {
             </a>
           ))}
 
-          {/* Auth: open provider chooser (shows Google if configured) */}
-          <button type="button" onClick={() => signIn()} className={chipGlassy}>
+          {/* Auth: go straight to Google OAuth */}
+          <button
+            type="button"
+            onClick={() => signIn("google")}
+            className={chipGlassy}
+          >
             Log in
           </button>
-          {/* Or, use a custom page: <Link href="/login" className={chipGlassy}>Log in</Link> */}
         </div>
       </nav>
     </header>

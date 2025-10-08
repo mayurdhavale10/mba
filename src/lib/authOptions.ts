@@ -7,10 +7,20 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   providers: [
     ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET
-      ? [GitHubProvider({ clientId: process.env.GITHUB_ID, clientSecret: process.env.GITHUB_SECRET })]
+      ? [
+          GitHubProvider({
+            clientId: process.env.GITHUB_ID as string,
+            clientSecret: process.env.GITHUB_SECRET as string,
+          }),
+        ]
       : []),
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-      ? [GoogleProvider({ clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET })]
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+          }),
+        ]
       : []),
   ],
   callbacks: {
@@ -20,8 +30,5 @@ export const authOptions: NextAuthOptions = {
     async session({ session }) {
       return session;
     },
-  },
-  pages: {
-    signIn: "/login",
   },
 };
