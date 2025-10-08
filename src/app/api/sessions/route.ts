@@ -1,6 +1,6 @@
-// src/app/api/sessions/route.ts
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 import { errorBody, AppError, UnauthorizedError, BadRequestError } from "@/lib/errors";
 import { assertRateLimit } from "@/lib/rate-limit";
 import { listRecentByUser } from "@/domain/essay/models/feedbackSession.repo";
@@ -10,11 +10,10 @@ import { generate } from "@/domain/essay/services/feedback.service";
 export async function GET(request: Request) {
   try {
     const { remaining, resetAt } = assertRateLimit(request, { limit: 30, windowMs: 60_000 });
-    const session = await auth();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.id) throw new UnauthorizedError("Sign in to view sessions");
 
     const items = await listRecentByUser(session.user.id, 10);
-
     const res = NextResponse.json({ items }, { status: 200 });
     res.headers.set("X-RateLimit-Remaining", String(remaining));
     res.headers.set("X-RateLimit-Reset", String(resetAt));
@@ -28,17 +27,14 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const { remaining, resetAt } = assertRateLimit(request);
-    const session = await auth();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.id) throw new UnauthorizedError("Sign in to save sessions");
 
     const body = await request.json();
     const parsed = EssayInputSchema.parse(body);
     if (!parsed.essayText) throw new BadRequestError("essayText required");
 
-    const { feedback, sessionId } = await generate(parsed.essayText, {
-      save: true,
-      userId: session.user.id,
-    });
+    const { feedback, sessionId } = await generate(parsed.essayText, { save: true, userId: session.user.id });
 
     const res = NextResponse.json({ sessionId, feedback }, { status: 200 });
     res.headers.set("X-RateLimit-Remaining", String(remaining));

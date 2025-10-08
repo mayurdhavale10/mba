@@ -1,19 +1,18 @@
-// src/app/api/feedback/route.ts
 import { NextResponse } from "next/server";
 import { EssayInputSchema } from "@/domain/essay/validators/essay.schema";
 import { generate } from "@/domain/essay/services/feedback.service";
 import { assertRateLimit } from "@/lib/rate-limit";
 import { errorBody, AppError } from "@/lib/errors";
-import { auth } from "@/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 export async function POST(request: Request) {
   try {
     const { remaining, resetAt } = assertRateLimit(request);
-
     const body = await request.json();
     const { essayText, options } = EssayInputSchema.parse(body);
 
-    const session = await auth(); // optional
+    const session = await getServerSession(authOptions); // v4-safe
     const { feedback, sessionId } = await generate(essayText, {
       save: options?.save === true && !!session?.user?.id,
       userId: session?.user?.id ?? null,

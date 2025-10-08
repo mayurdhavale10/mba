@@ -2,7 +2,6 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import type { Feedback, Bucket } from "@/domain/essay/types";
 import { feedbackToText } from "@/lib/pdf";
 

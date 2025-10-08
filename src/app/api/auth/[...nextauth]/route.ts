@@ -1,24 +1,5 @@
 import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
-import { env } from "@/lib/env";
+import { authOptions } from "@/lib/authOptions";
 
-type TokenExt = { provider?: string; sub?: string | null };
-
-const handler = NextAuth({
-  providers: [GitHub({ clientId: env.GITHUB_ID, clientSecret: env.GITHUB_SECRET })],
-  session: { strategy: "jwt" },
-  callbacks: {
-    async jwt({ token, account }) {
-      if (account) (token as TokenExt).provider = account.provider;
-      return token;
-    },
-    async session({ session, token }) {
-      const t = token as TokenExt;
-      session.provider = t.provider;
-      session.user = { ...session.user, id: t.sub ?? null };
-      return session;
-    },
-  },
-});
-
-export const { GET, POST } = handler;
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
