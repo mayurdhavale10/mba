@@ -1,7 +1,4 @@
-// middleware.ts
-export { auth as middleware } from "@/auth";
-
-// Protect only these paths (add more as needed)
-export const config = {
-  matcher: ["/(protected)(.*)", "/api/sessions"],
-};
+// middleware.ts (temporary no-op)
+import { NextResponse } from "next/server";
+export const config = { matcher: [] }; // match nothing
+export default function middleware() { return NextResponse.next(); }
