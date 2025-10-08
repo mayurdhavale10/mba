@@ -1,11 +1,11 @@
 // src/app/page.tsx
 import Image from "next/image";
 import Link from "next/link";
+import Product from "@/components/marketing/Product";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[var(--paper,#ffffff)] text-[var(--ink,#111)]">
-      {/* Sticky in-page navbar */}
       <header className="sticky top-0 z-50 backdrop-blur bg-white/70 border-b border-black/5">
         <nav className="mx-auto max-w-[1100px] px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -16,7 +16,7 @@ export default function Home() {
             <a href="#why-us" className="hover:opacity-80">Why us</a>
             <a href="#features" className="hover:opacity-80">Features</a>
             <a href="#product" className="px-3 py-1.5 rounded-full bg-[var(--salmon,#ff6f4d)] text-white hover:opacity-90">
-              Try now
+              Review essay
             </a>
           </div>
         </nav>
@@ -24,18 +24,8 @@ export default function Home() {
 
       {/* HERO */}
       <section className="relative w-full h-[78vh] md:h-[86vh] overflow-hidden">
-        {/* Background image */}
-        <Image
-          src="/hompage/mbaheroschool.webp"
-          alt="MBA campus hero"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        {/* Overlay */}
+        <Image src="/hompage/mbaheroschool.webp" alt="MBA campus hero" fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-black/40" />
-        {/* Content */}
         <div className="relative z-10 h-full">
           <div className="mx-auto max-w-[1100px] h-full px-6 md:px-8 flex flex-col justify-center">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white">
@@ -45,16 +35,10 @@ export default function Home() {
               Get the competitive edge. Our AI analyzes your draft and delivers instant, expert-level feedback.
             </p>
             <div className="mt-8 flex gap-3">
-              <a
-                href="#product"
-                className="px-5 py-3 rounded-full bg-[var(--salmon,#ff6f4d)] text-white font-medium hover:opacity-90"
-              >
-                Try it now
+              <a href="#product" className="px-5 py-3 rounded-full bg-[var(--salmon,#ff6f4d)] text-white font-medium hover:opacity-90">
+                Review essay
               </a>
-              <a
-                href="#why-us"
-                className="px-5 py-3 rounded-full border border-white/70 text-white font-medium hover:bg-white/10"
-              >
+              <a href="#why-us" className="px-5 py-3 rounded-full border border-white/70 text-white font-medium hover:bg-white/10">
                 Why us
               </a>
             </div>
@@ -62,7 +46,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Placeholder anchors so the navbar links work (fill later with real sections) */}
+      {/* Sections */}
       <section id="why-us" className="mx-auto max-w-[1100px] px-6 md:px-8 py-20">
         <h2 className="text-2xl font-semibold mb-4">Why us</h2>
         <p className="text-sm text-black/70">Add your value props here.</p>
@@ -78,10 +62,8 @@ export default function Home() {
         </ul>
       </section>
 
-      <section id="product" className="mx-auto max-w-[1100px] px-6 md:px-8 py-20">
-        <h2 className="text-2xl font-semibold mb-4">Product</h2>
-        <p className="text-sm text-black/70">Hook up the real Essay Review UI here.</p>
-      </section>
+      {/* Render the real product tool HERE (it already has id="product") */}
+      <Product />
 
       <footer className="border-t border-black/5 py-8 text-center text-sm text-black/60">
         © {new Date().getFullYear()} MBA Mirror
