@@ -9,7 +9,6 @@ import { signIn } from "next-auth/react";
 const SECTIONS = [
   { id: "product", label: "Review essay", primary: true },
   { id: "features", label: "Features", primary: false },
-  { id: "contact", label: "Contact", primary: false },
 ];
 
 export default function InPageNavbar() {
@@ -86,9 +85,12 @@ export default function InPageNavbar() {
               {s.label}
             </a>
           ))}
-          <button type="button" onClick={() => signIn("github")} className={chipGlassy}>
+
+          {/* Auth: open provider chooser (shows Google if configured) */}
+          <button type="button" onClick={() => signIn()} className={chipGlassy}>
             Log in
           </button>
+          {/* Or, use a custom page: <Link href="/login" className={chipGlassy}>Log in</Link> */}
         </div>
       </nav>
     </header>
