@@ -22,9 +22,34 @@ const RAW = [
 ];
 const src = (name: string) => encodeURI(`/whyus/${name}`);
 
+// ---- small utility: observe element size ----
+function useElementWidth<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    if (!ref.current) return;
+    const el = ref.current;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const w = entry.contentRect?.width ?? el.clientWidth;
+        setWidth(Math.max(0, Math.round(w)));
+      }
+    });
+    ro.observe(el);
+    // initialize immediately
+    setWidth(el.clientWidth);
+    return () => ro.disconnect();
+  }, []);
+  return { ref, width };
+}
+
 export default function WhyUs() {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const inView = useInView(ref, { amount: 0.35, once: true });
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(scrollRef, { amount: 0.35, once: true });
+
+  // Stage size (for responsive math)
+  const { ref: stageRef, width: stageW } = useElementWidth<HTMLDivElement>();
+  const isMobile = stageW > 0 && stageW < 480;
 
   // --- State machine ---
   const [mode, setMode] = useState<Mode>("intro");
@@ -38,11 +63,24 @@ export default function WhyUs() {
   const HERO_INDEX = 0;
   const DECK = useMemo(() => RAW.slice(1), []);
 
-  // Fan positions for deck (hero stays center)
+  // Responsive sizes
+  const baseSize = isMobile ? { w: 220, h: 146 } : { w: 260, h: 172 };
+  const heroSize = isMobile ? { w: 240, h: 160 } : { w: 300, h: 198 };
+
+  // Sizes: hero larger only in intro/fan; equal in grid
+  const sizeFor = (i: number) => {
+    return mode === "grid" ? baseSize : i === HERO_INDEX ? heroSize : baseSize;
+  };
+
+  // Z-index: flat in grid; hero on top otherwise
+  const zIndexFor = (i: number) => (mode === "grid" ? 1 : i === HERO_INDEX ? 10 : 0);
+
+  // Fan positions for deck (hero stays center) — responsive radius
   const fanPositions = useMemo(() => {
     const total = DECK.length;
+    // radius scales with stage width; clamp to a comfortable range
+    const radius = Math.max(160, Math.min(isMobile ? 260 : 380, Math.floor(stageW * (isMobile ? 0.45 : 0.5))));
     const arcSpread = 180;
-    const radius = 350;
     const startAngle = -arcSpread / 2;
     const step = total > 1 ? arcSpread / (total - 1) : 0;
 
@@ -51,18 +89,25 @@ export default function WhyUs() {
       const rad = (angle * Math.PI) / 180;
       return {
         x: Math.sin(rad) * radius,
-        y: Math.cos(rad) * radius * 0.4,
+        y: Math.cos(rad) * radius * (isMobile ? 0.35 : 0.4),
         rotate: angle * 0.3,
       };
     });
-  }, [DECK.length]);
+  }, [DECK.length, stageW, isMobile]);
 
-  // Grid targets: 4 on top row, 3 on bottom (centered)
+  // Grid targets: desktop 4/3; mobile 3/4 — responsive spacing
   const gridTargets = useMemo(() => {
-    const row1 = 4;
-    const spacingX = 240;
-    const topY = -120;
-    const botY = 120;
+    const row1 = isMobile ? 3 : 4;
+    const row2Count = Math.max(ALL.length - row1, 0);
+
+    // base horizontal spacing ~ card width + gap, but don't exceed stage width
+    const idealSpacing = baseSize.w + (isMobile ? 24 : 40);
+    const maxSpacing =
+      row1 > 1 ? Math.max(120, Math.min(idealSpacing, (stageW - baseSize.w) / (row1 - 1) + baseSize.w * 0.1)) : 0;
+    const spacingX = row1 > 1 ? Math.floor(maxSpacing) : 0;
+
+    const topY = isMobile ? -90 : -120;
+    const botY = isMobile ? 90 : 120;
 
     const distribute = (n: number) => {
       if (n <= 0) return [] as number[];
@@ -73,24 +118,13 @@ export default function WhyUs() {
     };
 
     const row1Xs = distribute(Math.min(row1, ALL.length));
-    const row2Count = Math.max(ALL.length - row1, 0);
     const row2Xs = distribute(row2Count);
 
     const out: { x: number; y: number }[] = [];
     for (let i = 0; i < Math.min(row1, ALL.length); i++) out.push({ x: row1Xs[i], y: topY });
     for (let j = 0; j < row2Count; j++) out.push({ x: row2Xs[j], y: botY });
     return out; // index in ALL -> target
-  }, [ALL.length]);
-
-  // Sizes: hero larger only in intro/fan; equal in grid
-  const sizeFor = (i: number) => {
-    const base = { w: 260, h: 172 };
-    const hero = { w: 300, h: 198 };
-    return mode === "grid" ? base : i === HERO_INDEX ? hero : base;
-  };
-
-  // Z-index: flat in grid; hero on top otherwise
-  const zIndexFor = (i: number) => (mode === "grid" ? 1 : i === HERO_INDEX ? 10 : 0);
+  }, [ALL.length, baseSize.w, isMobile, stageW]);
 
   // Variants per mode (typed with Variants)
   const variants: Variants = {
@@ -118,7 +152,7 @@ export default function WhyUs() {
         ? {
             x: 0,
             y: 0,
-            scale: 1.12,
+            scale: isMobile ? 1.08 : 1.12,
             opacity: 1,
             rotate: 0,
             transition: { duration: 0.6, ease: EASE_SMOOTH },
@@ -180,7 +214,7 @@ export default function WhyUs() {
           </motion.p>
 
           <motion.h2
-            className="mt-0 text-3xl md:text-5xl font-extrabold tracking-tight text-[#1a1a1a]"
+            className="mt-0 text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight text-[#1a1a1a]"
             variants={{
               hidden: { opacity: 0, y: 16 },
               show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE_SMOOTH } },
@@ -190,7 +224,7 @@ export default function WhyUs() {
           </motion.h2>
 
           <motion.p
-            className="mt-1 text-xs md:text-sm text-black/60"
+            className="mt-1 text-[11px] sm:text-xs md:text-sm text-black/60"
             variants={{
               hidden: { opacity: 0, y: 8 },
               show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_SMOOTH, delay: 0.02 } },
@@ -201,7 +235,7 @@ export default function WhyUs() {
 
           {/* subtle underline reveal for polish */}
           <motion.div
-            className="mt-3 h-px w-20 md:w-24 mx-auto bg-[#F8DCD4]"
+            className="mt-3 h-px w-16 sm:w-20 md:w-24 mx-auto bg-[#F8DCD4]"
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
@@ -210,8 +244,15 @@ export default function WhyUs() {
         </motion.div>
 
         {/* Stage */}
-        <div ref={ref} className="relative mx-auto max-w-[980px] -mt-4" onClick={mode === "grid" ? toFan : undefined}>
-          <div className="relative h-[500px] md:h-[560px] overflow-visible flex items-center justify-center">
+        <div
+          ref={scrollRef}
+          className="relative mx-auto max-w-[980px] -mt-4"
+          onClick={mode === "grid" ? toFan : undefined}
+        >
+          <div
+            ref={stageRef}
+            className="relative h-[440px] sm:h-[500px] md:h-[560px] overflow-visible flex items-center justify-center"
+          >
             {/* World origin at center */}
             <div className="absolute left-1/2 top-1/2" style={{ transform: "translate(-50%, -50%)" }}>
               {ALL.map((file, i) => {
@@ -234,7 +275,7 @@ export default function WhyUs() {
                       mode === "grid"
                         ? { scale: 1.03, transition: { duration: 0.2, ease: EASE_BACK } }
                         : i === HERO_INDEX
-                        ? { scale: 1.14, transition: { duration: 0.25, ease: EASE_BACK } }
+                        ? { scale: 1.12, transition: { duration: 0.25, ease: EASE_BACK } }
                         : { scale: 1.02, transition: { duration: 0.2, ease: EASE_BACK } }
                     }
                     onClick={mode === "grid" ? undefined : toGrid}
