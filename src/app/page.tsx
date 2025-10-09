@@ -2,6 +2,9 @@
 import Image from "next/image";
 import InPageNavbar from "@/components/marketing/InPageNavbar";
 import Product from "@/components/marketing/Product";
+import Features from "@/components/marketing/Features";
+import WhyUs from "@/components/marketing/WhyUs";
+import Footer from "@/components/marketing/footer";
 
 export default function Home() {
   return (
@@ -48,16 +51,11 @@ export default function Home() {
       {/* PRODUCT (core tool) */}
       <Product />
 
-      {/* FEATURES (keep minimal, expand later) */}
-      <section id="features" className="mx-auto max-w-[1100px] px-6 md:px-8 py-20">
-        <h2 className="text-2xl font-semibold mb-4">Features</h2>
-        <ul className="list-disc pl-6 space-y-2 text-black/80">
-          <li>Paste or OCR</li>
-          <li>Clarity / Structure / Storytelling scores</li>
-          <li>Rewrite examples and summary</li>
-          <li>Export to PDF/TXT</li>
-        </ul>
-      </section>
+      {/* FEATURES */}
+      <Features />
+
+      <WhyUs />
+      <Footer />
 
       <footer className="border-t border-black/5 py-8 text-center text-sm text-black/60">
         © {new Date().getFullYear()} MBA Mirror

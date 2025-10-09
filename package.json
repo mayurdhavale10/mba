@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mlc-ai/web-llm": "^0.2.79",
+    "framer-motion": "^12.23.22",
     "jspdf": "^3.0.3",
     "mangodb": "^1.0.0",
     "mongodb": "^6.20.0",
