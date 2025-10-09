@@ -1,10 +1,10 @@
-// src/app/page.tsx
 import Image from "next/image";
 import InPageNavbar from "@/components/marketing/InPageNavbar";
 import Product from "@/components/marketing/Product";
 import Features from "@/components/marketing/Features";
 import WhyUs from "@/components/marketing/WhyUs";
 import Footer from "@/components/marketing/footer";
+import Hero from "@/components/marketing/Hero"; // ← add
 
 export default function Home() {
   return (
@@ -24,26 +24,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 h-full">
           <div className="mx-auto max-w-[1100px] h-full px-6 md:px-8 flex flex-col justify-center">
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white">
-              Stop Guessing. <span className="text-[var(--salmon,#ff6f4d)]">Start Nailing</span> Your MBA Essays.
-            </h1>
-            <p className="mt-4 md:mt-6 text-lg md:text-2xl text-white/90 max-w-2xl">
-              Get the competitive edge. Our AI analyzes your draft and delivers instant, expert-level feedback.
-            </p>
-            <div className="mt-8 flex gap-3">
-              <a
-                href="#product"
-                className="px-5 py-3 rounded-full bg-[var(--salmon,#ff6f4d)] text-white font-medium hover:opacity-90"
-              >
-                Review essay
-              </a>
-              <a
-                href="#features"
-                className="px-5 py-3 rounded-full border border-white/70 text-white font-medium hover:bg-white/10"
-              >
-                Features
-              </a>
-            </div>
+            <Hero /> {/* ← animated text lives in a client component */}
           </div>
         </div>
       </section>

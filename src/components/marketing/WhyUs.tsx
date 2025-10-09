@@ -8,7 +8,7 @@ type Mode = "intro" | "fan" | "grid";
 
 // Framer Motion easing tuples (typed so TS accepts them)
 const EASE_SMOOTH: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const EASE_BACK:   [number, number, number, number] = [0.34, 1.56, 0.64, 1];
+const EASE_BACK: [number, number, number, number] = [0.34, 1.56, 0.64, 1];
 
 // Your card images (spaces kept; we encode on use)
 const RAW = [
@@ -158,13 +158,56 @@ export default function WhyUs() {
     <section id="why-us" className="bg-white">
       {/* ultra-tight vertical padding */}
       <div className="mx-auto max-w-[1200px] px-4 md:px-6 py-6 md:py-8">
-        {/* Heading */}
-        <div className="text-center mb-0">
-          <p className="uppercase tracking-wider text-xs font-semibold text-[#CC6F5E]">Why us</p>
-          <h2 className="mt-0 text-3xl md:text-5xl font-extrabold tracking-tight text-[#1a1a1a]">
+        {/* Heading (animated) */}
+        <motion.div
+          className="text-center mb-0"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={{
+            hidden: { opacity: 1 },
+            show: { transition: { staggerChildren: 0.1 } },
+          }}
+        >
+          <motion.p
+            className="uppercase tracking-wider text-xs font-semibold text-[#CC6F5E]"
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_SMOOTH } },
+            }}
+          >
+            Why us
+          </motion.p>
+
+          <motion.h2
+            className="mt-0 text-3xl md:text-5xl font-extrabold tracking-tight text-[#1a1a1a]"
+            variants={{
+              hidden: { opacity: 0, y: 16 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE_SMOOTH } },
+            }}
+          >
             Built to help you get accepted.
-          </h2>
-        </div>
+          </motion.h2>
+
+          <motion.p
+            className="mt-1 text-xs md:text-sm text-black/60"
+            variants={{
+              hidden: { opacity: 0, y: 8 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_SMOOTH, delay: 0.02 } },
+            }}
+          >
+            (click on any card)
+          </motion.p>
+
+          {/* subtle underline reveal for polish */}
+          <motion.div
+            className="mt-3 h-px w-20 md:w-24 mx-auto bg-[#F8DCD4]"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: EASE_SMOOTH }}
+          />
+        </motion.div>
 
         {/* Stage */}
         <div ref={ref} className="relative mx-auto max-w-[980px] -mt-4" onClick={mode === "grid" ? toFan : undefined}>
@@ -178,7 +221,6 @@ export default function WhyUs() {
                     key={file}
                     className="absolute will-change-transform"
                     style={{
-                      // center anchor
                       left: -w / 2,
                       top: -h / 2,
                       zIndex: zIndexFor(i),
